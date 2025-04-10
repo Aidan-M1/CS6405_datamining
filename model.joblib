@@ -1,0 +1,24 @@
+from sklearn.svm import SVR
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
+from sklearn.svm import SVR
+
+file_id = '1DP3G49DWVUaRBkn7wssPi6CfY1pTmTQP'
+url = f'https://drive.google.com/uc?id={file_id}'
+
+df = pd.read_csv(url)
+
+y = df['Borg']
+X = df.iloc[:,2:-1]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=df['Subject'])
+
+svr = Pipeline([
+    ('scaler', MinMaxScaler()),
+    ('pca', PCA(n_components=0.99)),
+    ('svr', SVR())
+    ])
+
+svr.fit(X_train, y_train)
